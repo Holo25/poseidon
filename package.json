@@ -1,0 +1,12 @@
+{
+  "name": "poseidon",
+  "version": "0.0.0",
+  "description": "Poseidon",
+  "main": "server.js",
+  "author": {
+    "name": "Pixel"
+  },
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}

@@ -1,0 +1,10 @@
+﻿body {
+    background-color: #eee;
+    margin-top:80px;
+}
+
+.btn-green {
+    color: #fff;
+    background-color: #689f38;
+    border-color: #689f38;
+}

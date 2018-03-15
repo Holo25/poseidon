@@ -1,0 +1,14 @@
+﻿body {
+    background-color: #eee;
+}
+
+.form-login {
+    max-width: 330px;
+    
+}
+
+.btn-green {
+    color: #fff;
+    background-color: #689f38;
+    border-color: #689f38;
+}
