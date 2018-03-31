@@ -7,6 +7,7 @@
     "name": "Pixel"
   },
   "dependencies": {
+    "ejs": "^2.5.8",
     "express": "^4.16.2"
   }
 }

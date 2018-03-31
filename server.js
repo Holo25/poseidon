@@ -15,19 +15,16 @@ var path = require('path');
 
 /auctions
 /auctions/:auctionid/bid
-
-
-finishAuction(), startAuction()
-Mivel az árverések befejezése egy belső esemény amit külső személy nem befolyásolhat, ezért ehhez nem készítettem külön route-t.
-Timer segítségével tervezem ezeket a függvényeket meghívni.
+/auctions/:auctionid/start
+/auctions/:auctionid/delete
 */
-var userLoggedIn = false;  //TESZT VÁLTOZÓ
+var userLoggedIn = true;  //TESZT VÁLTOZÓ
 
-var finishAuction = function(){
+var finishAuction = function(req, res, next){
     //A nyertesnek jóváírja a megvett tantárgyat majd törli a az árverést.
 }
 
-var startAuction = function(){
+var startAuction = function(req, res, next){
     //Elkezd egy új árverést ha kevesebb számú van aktív mind a maximális megengedett
 }
 
@@ -46,6 +43,16 @@ var reverseAuthUser = function (req, res, next) {
 }
 var getUser = function (req, res, next) {
     //Megkeresi a jelenleg loginolt usert
+    res.data={
+            user:{
+                id:1,
+                username:"sutemeny",
+                name:"Szilvás Bukta",
+                credit:4201,
+                neptun:"C3F4IM",
+                email:"mertazt@szeretem.hu"
+                }
+            };
     console.log("User Goted");
     next();
 }
@@ -95,12 +102,13 @@ var checkAdmin = function (req, res, next) {
     }else res.redirect('/auctions');
 }
 
-var renderMW = function (req, res, next) {
-    //Rendereli az adott oldalt
-    console.log("Page Rendered");
-    res.send('<h1>"pls rember that wen u feel scare or frigten<br>never forget ttimes wen u feeled happy<br>wen day is dark alway rember happy day"</h1>');
-    next();
-}
+var renderMW = function (viewName) {
+    
+      return function (req, res) {
+        res.render(viewName, {data:res.data});
+      };
+    
+    };
 
 var getAuctionList = function (req, res, next) {
     //Visszaadja az árverések listáját(aka főoldal tartalmát)
@@ -127,25 +135,26 @@ var makeBid = function (req, res, next) {
 }
 
 app.use(express.static('public'))
+app.set('view engine', 'ejs');
 
 
 app.use('/user',
-    authUser,
     getUser,
-    renderMW
+    authUser,
+    renderMW("profil")
 );
 
 app.use('/user/edit',
-    authUser,
     getUser,
+    authUser,
     editUser,
-    renderMW
+    renderMW("profil")
 );
 
 app.use('/login',
     reverseAuthUser,
     validateUser,
-    renderMW
+    renderMW("login")
 );
 
 app.use('/logout',
@@ -161,46 +170,43 @@ app.use('/register',
     reverseAuthUser,
     checkUserRegistration,
     addUser,
-    renderMW
+    renderMW("register")
 );
 
 app.use('/recover',
     reverseAuthUser,
     recoverPassword,
-    renderMW
+    renderMW("Recover")
 );
 
 app.use('/admin',
     checkAdmin,
-    renderMW
+    renderMW("admin")
 );
 
 app.use('/auctions',
+    getUser,
     authUser,
     getAuctionList,
-    renderMW
+    renderMW("auctions")
 );
 
 app.post('/auctions/bid',
+    getUser,
     authUser,
     getAuction,
     validateBid,
     makeBid,
-    renderMW
+    renderMW("auctions")
 );
-/* 
+ 
 app.use('/',
     function (req, res, next) {
-        res.redirect('/auctions'); Kiakad a böngésző a redirect miatt
+        
         next();
     }
     
 );
 
-app.get('/', function (req, res) {
-    
-     res.sendFile(path.join(__dirname + "/public/login.html"));
-    
-})*/
 
 app.listen(80);

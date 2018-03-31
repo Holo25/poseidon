@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-md navbar-light fixed-top">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".collapse-group" aria-controls="collapse-group" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse collapse-group">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item <% if(page==="auctions"){ %> active <% } %>">
+                <a class="nav-link" href="auctions">Aukciók<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item <% if(page==="profil"){ %> active <% } %>">
+                <a class="nav-link" href="user">Profil</a>
+            </li>
+            
+        </ul>
+    </div>
+        <div class="mx-auto">
+            <a class="navbar-brand" href="#">Poszeidon:<small> A boldogság egy kattintásnyira van!</small></a>
+            
+        </div>
+    <div class="collapse navbar-collapse collapse-group">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="user"><%= user.credit %>cr</a>
+            </li>
+            <li><a class="nav-link" href="logout">Kijelentkezés</a></li>
+        </ul>
+    </div>
+</nav>
