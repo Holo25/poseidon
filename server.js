@@ -17,15 +17,20 @@ var path = require('path');
 /auctions/:auctionid/bid
 /auctions/:auctionid/start
 /auctions/:auctionid/delete
+
+Az adatokat a getUser és getAuctionList middlewareben definiáltam.
+
 */
 var userLoggedIn = true;  //TESZT VÁLTOZÓ
 
 var finishAuction = function(req, res, next){
     //A nyertesnek jóváírja a megvett tantárgyat majd törli a az árverést.
+    next();
 }
 
 var startAuction = function(req, res, next){
     //Elkezd egy új árverést ha kevesebb számú van aktív mind a maximális megengedett
+    next();
 }
 
 var authUser = function (req, res, next) {
@@ -50,10 +55,20 @@ var getUser = function (req, res, next) {
                 name:"Szilvás Bukta",
                 credit:4201,
                 neptun:"C3F4IM",
-                email:"mertazt@szeretem.hu"
+                email:"mertazt@szeretem.hu",
+                items:[
+                    {name:"Grafika",
+                    credit:3,
+                    price:400
+                    },
+                    {name:"BSz2",
+                    credit:4,
+                    price:600
+                    }
+                ]
                 }
             };
-    console.log("User Goted");
+    console.log("User Goted ");
     next();
 }
 
@@ -112,7 +127,22 @@ var renderMW = function (viewName) {
 
 var getAuctionList = function (req, res, next) {
     //Visszaadja az árverések listáját(aka főoldal tartalmát)
+    var item1={name:"Grafika", credit:3, price:400 };
+    var item2={name:"Szerveroldali Javascript", credit:2, price:700 };
+    var item3={name:"Mérnök leszek", credit:5, price:10 };
+    res.data["auctions"]=[
+        {id:1,expireTime:30, item:item1},
+        {id:2,expireTime:90, item:item2},
+        {id:3,expireTime:1,  item:item3}
+    ]
+
     console.log("Auction List Getted");
+    next();
+}
+
+var getAuction = function (req, res, next) {
+    //Visszaadja a megadott árverést
+    console.log("Auction Getted");
     next();
 }
 
@@ -160,7 +190,7 @@ app.use('/login',
 app.use('/logout',
     authUser,
     logoutUser,
-    function (req, res) {
+    function (req, res, next) {
         res.redirect('/login');
         next();
     }
@@ -180,7 +210,9 @@ app.use('/recover',
 );
 
 app.use('/admin',
+    getUser,
     checkAdmin,
+    getAuctionList,
     renderMW("admin")
 );
 
@@ -191,13 +223,26 @@ app.use('/auctions',
     renderMW("auctions")
 );
 
-app.post('/auctions/bid',
+app.post('/auctions/:auctionid/bid',
     getUser,
     authUser,
     getAuction,
     validateBid,
     makeBid,
-    renderMW("auctions")
+);
+
+app.post('/auctions/:auctionid/start',
+getUser,
+checkAdmin,
+getAuction,
+startAuction
+);
+
+app.post('/auctions/:auctionid/stop',
+getUser,
+checkAdmin,
+getAuction,
+finishAuction
 );
  
 app.use('/',

@@ -53,28 +53,10 @@
             </form>
             <h1>Megvett tantárgyak</h1>
             <div class="row">
-                <div class="card col-lg-6 my-1">
-                    <div class="card-body">
-                        <h5 class="card-title">BSz2</h5>
-                        <p class="card-text">
-                            Kredit: 4
-                        </p>
-                        <p class="card-text">
-                            <span class="float-right">Megvásárlási ár: 600cr</span>
-                        </p>
-                    </div>
-                </div>
-                <div class="card col-lg-6 my-1">
-                    <div class="card-body">
-                        <h5 class="card-title">Grafika</h5>
-                        <p class="card-text">
-                            Kredit: 3
-                        </p>
-                        <p class="card-text">
-                            <span class="float-right">Megvásárlási ár: 600cr</span>
-                        </p>
-                    </div>
-                </div>
+                <%var i;
+                for (i = 0; i < data.user.items.length; i++) {  %>
+                        <%- include('item_card',{item:data.user.items[i]}) %>
+                <% } %>
             </div>
         </div>
     </main>

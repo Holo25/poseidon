@@ -1,0 +1,21 @@
+<div class="card col-lg-6 my-1">
+    <div class="card-body">
+        <h5 class="card-title"><%= auction.item.name %></h5>
+        <p class="card-text">
+            Kredit: <%= auction.item.credit %>
+            <span class="float-right">Lejár: <%= auction.expireTime %></span>
+        </p>
+        <p class="card-text">
+            <span class="float-right">Jelenlegi ár: <%= auction.item.price %>cr</span>
+        </p>
+        <form action="/auctions/<%= auction.id %>/bid" method="GET">
+            <div class="input-group mt-5">
+                <input type="text" class="form-control" placeholder="Licitált credit" aria-label="Licitált credit">
+                <div class="input-group-append">
+                    <span class="input-group-text">cr</span>
+                    <button class="btn btn-outline-secondary" type="submit">Licitálok!</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

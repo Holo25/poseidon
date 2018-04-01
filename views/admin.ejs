@@ -38,83 +38,12 @@
                     <button type="button" class="btn btn-green">Mentés</button>
                 </fieldset>
             </form>
+            TODO:Árverés indítás és leállítás form
             <div class="row">
-                <div class="card col-lg-6 my-1">
-                    <div class="card-body">
-                        <h5 class="card-title">BSz2</h5>
-                        <p class="card-text">
-                            Kredit: 4
-                            <span class="float-right">Lejár: 00:12:23</span>
-                        </p>
-                        <p class="card-text">
-                            <span class="float-right">Jelenlegi ár: 500cr</span>
-                        </p>
-                        <div class="input-group mt-5">
-                            <input type="text" class="form-control" placeholder="Licitált credit" aria-label="Licitált credit">
-                            <div class="input-group-append">
-                                <span class="input-group-text">cr</span>
-                                <button class="btn btn-outline-secondary" type="button">Licitálok!</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card col-lg-6 my-1">
-                    <div class="card-body">
-                        <h5 class="card-title">Grafika</h5>
-                        <p class="card-text">
-                            Kredit: 3
-                            <span class="float-right">Lejár: 00:14:23</span>
-                        </p>
-                        <p class="card-text">
-                            <span class="float-right">Jelenlegi ár: 1500cr</span>
-                        </p>
-                        <div class="input-group mt-5">
-                            <input type="text" class="form-control" placeholder="Licitált credit" aria-label="Licitált credit">
-                            <div class="input-group-append">
-                                <span class="input-group-text">cr</span>
-                                <button class="btn btn-outline-secondary" type="button">Licitálok!</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card col-lg-6 my-1">
-                    <div class="card-body">
-                        <h5 class="card-title">Rendszerelmélet</h5>
-                        <p class="card-text">
-                            Kredit: 4
-                            <span class="float-right">Lejár: 00:22:23</span>
-                        </p>
-                        <p class="card-text">
-                            <span class="float-right">Jelenlegi ár: 200cr</span>
-                        </p>
-                        <div class="input-group mt-5">
-                            <input type="text" class="form-control" placeholder="Licitált credit" aria-label="Licitált credit">
-                            <div class="input-group-append">
-                                <span class="input-group-text">cr</span>
-                                <button class="btn btn-outline-secondary" type="button">Licitálok!</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card col-lg-6 my-1">
-                    <div class="card-body">
-                        <h5 class="card-title">Adatbázisok</h5>
-                        <p class="card-text">
-                            Kredit: 5
-                            <span class="float-right">Lejár: 00:01:23</span>
-                        </p>
-                        <p class="card-text">
-                            <span class="float-right">Jelenlegi ár: 50000cr</span>
-                        </p>
-                        <div class="input-group mt-5">
-                            <input type="text" class="form-control" placeholder="Licitált credit" aria-label="Licitált credit">
-                            <div class="input-group-append">
-                                <span class="input-group-text">cr</span>
-                                <button class="btn btn-outline-secondary" type="button">Licitálok!</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <%var i;
+                for (i = 0; i < data.auctions.length; i++) {  %>
+                        <%- include('auction_card',{auction:data.auctions[i]}) %>
+                <% } %>
             </div>
         </div>
     </main>
