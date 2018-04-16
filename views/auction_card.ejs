@@ -6,7 +6,8 @@
             <span class="float-right">Lejár: <%= auction.expireTime %></span>
         </p>
         <p class="card-text">
-            <span class="float-right">Jelenlegi ár: <%= auction.item.price %>cr</span>
+            Utolsó licitáló: <%= auction.owner.username %>
+            <span class="float-right">Jelenlegi ár: <%= auction.price %>cr</span>
         </p>
         <form action="/auctions/<%= auction.id %>/bid" method="GET">
             <div class="input-group mt-5">

@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 var path = require('path');
+var mongoose = require('mongoose');
+
 
 /*
 /
@@ -22,53 +24,97 @@ Az adatokat a getUser és getAuctionList middlewareben definiáltam.
 
 */
 
-var userData={
-        user:{
-            id:1,
+var mongoDB = 'mongodb://localhost/c3f4im';
+mongoose.connect(mongoDB);
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+var Schema = mongoose.Schema;
+
+var ItemSchema = new Schema({
+    name: String,
+    credit: Number
+});
+
+var Item = mongoose.model('Item', ItemSchema );
+
+var UserSchema = new Schema({
+    username: String,
+    name: String,
+    credit: Number,
+    neptun: String,
+    email: String,
+});
+
+var User = mongoose.model('User', UserSchema);
+
+
+
+var AuctionSchema = new Schema({
+    expireTime: Number,
+    price: Number,
+    owner: {type: Schema.ObjectId, ref:'User'},
+    item: {type: Schema.ObjectId, ref:'Item'}
+});
+
+var Auction = mongoose.model('Auction', AuctionSchema);
+/*
+var user= new User({
             username:"sutemeny",
             name:"Szilvás Bukta",
             credit:4201,
             neptun:"C3F4IM",
-            email:"mertazt@szeretem.hu",
-            items:[
-                {name:"Grafika",
-                credit:3,
-                price:400
-                },
-                {name:"BSz2",
-                credit:4,
-                price:600
-                }
-            ]
-        }
-    };
+            email:"mertazt@szeretem.hu"
+            
+        });
+user.save(function (err) {
+    if (err) return handleError(err);
+  });
 
-var item1={name:"Grafika", credit:3, price:400 };
-var item2={name:"Szerveroldali Javascript", credit:2, price:700 };
-var item3={name:"Mérnök leszek", credit:5, price:10 };
 
-var auctionData=[
-    {id:0,expireTime:30, owner:userData, item:item1},
-    {id:1,expireTime:90, owner:userData, item:item2},
-    {id:2,expireTime:1,  owner:userData, item:item3}
-];
+var item= new Item({
+    name: "BSZ",
+    credit: 200
+});
+item.save(function (err) {
+if (err) return handleError(err);
+});
+
+var auction = new Auction({
+    expireTime: 90,
+    price: 300,
+    owner: mongoose.Types.ObjectId("5ad4c39422f51616782d2f3f"),
+    item: mongoose.Types.ObjectId("5ad4c549d0c8661f5c780f76")
+});
+
+auction.save(function (err) {
+    if (err) return handleError(err);
+    });
+*/
 
 var getUser = function (req, res, next) {
     //Megkeresi a jelenleg loginolt usert
-    res.data=userData;
-    console.log("User Goted ");
-    next();
+    User.findOne({},function(err, user){
+        console.log("---getUser---");
+        console.log(user);
+        res.data={user:user};
+        next();
+    });
 }
 
 
 
 var getAuctionList = function (req, res, next) {
     //Visszaadja az árverések listáját(aka főoldal tartalmát)
+    Auction.find({}).populate('item owner').exec(function(err,auctions){
+        console.log("---getAuctionList---");
+        console.log(auctions);
+        res.data["auctions"]=auctions;
+        console.log(res.data);
+        next();
+    });
     
-    res.data["auctions"]=auctionData;
-
-    console.log("Auction List Getted");
-    next();
 }
 
 var makeBid = function(req,res,next){
@@ -85,8 +131,8 @@ var makeBid = function(req,res,next){
 var renderMW = function (viewName) {
     
       return function (req, res) {
-        console.log("-----RENDERED------");
         res.render(viewName, {data:res.data});
+        console.log("-----RENDERED------");
       };
     
     };
