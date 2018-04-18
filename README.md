@@ -1,3 +1,3 @@
 ﻿# Poseidon
-
+Egységes tantárgyvételi rendszer.
 
