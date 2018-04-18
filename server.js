@@ -111,7 +111,18 @@ var getAuctionList = function (req, res, next) {
         console.log("---getAuctionList---");
         console.log(auctions);
         res.data["auctions"]=auctions;
-        console.log(res.data);
+        
+        next();
+    });
+    
+}
+
+var getAuction = function (req, res, next) {
+    //Visszaadja az árverések listáját(aka főoldal tartalmát)
+    Auction.findOne({_id:req.params.id}).populate('item owner').exec(function(err,auction){
+        console.log("---getAuction---");
+        console.log(auction);
+        res.data["auction"]=auction;
         next();
     });
     
@@ -119,13 +130,35 @@ var getAuctionList = function (req, res, next) {
 
 var makeBid = function(req,res,next){
     if(req.query.val){
-        if(req.query.val > res.data.auctions[req.params.id].item.price){
-            auctionData[req.params.id].item.price=req.query.val;
-        }
+        console.log("---makeBid---");
+        var auction=res.data.auction;
+        if(req.query.val > auction.price){
+            console.log(req.query.val +">"+auction.price);
+            var oldOwner=auction.owner;
+            var newOwner=res.data.user;
+            if(oldOwner.id==newOwner.id){
+                newOwner.credit-=req.query.val-auction.price;
+                oldOwner.credit=newOwner.credit;
+                auction.price=req.query.val;
+            }else{
+                oldOwner.credit+=auction.price;
+                auction.owner=newOwner;
+                auction.owner.credit-=req.query.val;
+                auction.price=req.query.val;
+            }
+            auction.owner.save(function (err) {
+                if (err) return handleError(err);
+                oldOwner.save(function (err) {
+                    if (err) return handleError(err);
+                    auction.save(function (err) {
+                        if (err) return handleError(err);
+                        return next();
+                        });
+                    });
+                });
+                
+        }else return next();
     }
-    else
-        res.send("Bocs. NO val param!");
-    next();
 }
 
 var renderMW = function (viewName) {
@@ -155,7 +188,7 @@ app.get('/auctions',
 
 app.get('/auctions/:id/bid',
         getUser,
-        getAuctionList,
+        getAuction,
         makeBid,
         function(req,res){
             res.redirect('/auctions');
