@@ -20,7 +20,6 @@ var mongoose = require('mongoose');
 /auctions/:auctionid/start
 /auctions/:auctionid/delete
 
-Az adatokat a getUser és getAuctionList middlewareben definiáltam.
 
 */
 
@@ -59,6 +58,63 @@ var AuctionSchema = new Schema({
 });
 
 var Auction = mongoose.model('Auction', AuctionSchema);
+//Database init
+User.findOne({username:"Suti"},function(err, user){
+    if(user === null){ // Suti nelkul nincs az eletnek ertelme.
+        var user1= new User({
+            username:"Suti",
+            name:"Szilvás Bukta",
+            credit:4201,
+            neptun:"C3F4IM",
+            email:"mertazt@szeretem.hu"
+            
+        });
+        user1.save(function (err) {
+            var user2= new User({
+                username:"Pretender",
+                name:"Epres Bukta",
+                credit:111,
+                neptun:"BATMAN",
+                email:"haha@ha.ha"
+                
+            });
+            user2.save(function (err) {
+                var item1= new Item({
+                    name: "BSZ",
+                    credit: 4
+                });
+                item1.save(function (err) {
+                    var item2= new Item({
+                        name: "Grafika",
+                        credit: 3
+                    });
+                    item2.save(function (err) {
+                        var auction1 = new Auction({
+                            expireTime: 90,
+                            price: 300,
+                            owner: user1._id,
+                            item: item1._id
+                        });
+                        
+                        auction1.save(function (err) {
+                            var auction2 = new Auction({
+                                expireTime: 960,
+                                price: 540,
+                                owner: user2._id,
+                                item: item2._id
+                            });
+                            
+                            auction2.save(function (err) {
+                                if (err) return handleError(err);
+                                });
+                            });
+                    });
+                });
+            });
+        });
+    }
+});
+
 /*
 var user= new User({
             username:"sutemeny",
@@ -78,7 +134,7 @@ var item= new Item({
     credit: 200
 });
 item.save(function (err) {
-if (err) return handleError(err);
+    if (err) return handleError(err);
 });
 
 var auction = new Auction({
@@ -157,8 +213,8 @@ var makeBid = function(req,res,next){
                     });
                 });
                 
-        }else return next();
-    }
+        }
+    }else return next();
 }
 
 var renderMW = function (viewName) {
