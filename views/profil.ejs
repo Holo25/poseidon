@@ -51,12 +51,21 @@
                     <button type="button" class="btn btn-green">Mentés</button>
                 </fieldset>
             </form>
+            <h1>Aktív Licitálások</h1>
+            <div class="row">
+                <%var i;
+                for (i = 0; i < data.auctions.length; i++) { %>
+                    <% if(data.auctions[i].expireTime>Date.now()) { %>
+                        <%- include('auction_card',{auction:data.auctions[i]}) %>
+                <% }} %>
+            </div>
             <h1>Megvett tantárgyak</h1>
             <div class="row">
                 <%var i;
-                for (i = 0; i < data.user.items.length; i++) {  %>
-                        <%- include('item_card',{item:data.user.items[i]}) %>
-                <% } %>
+                for (i = 0; i < data.auctions.length; i++) { %>
+                    <% if(data.auctions[i].expireTime<=Date.now()) { %>
+                        <%- include('item_card',{item:data.auctions[i].item,price:data.auctions[i].price}) %>
+                <% }} %>
             </div>
         </div>
     </main>

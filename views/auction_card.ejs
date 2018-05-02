@@ -22,9 +22,11 @@
     <script>
         function countdown<%= auction.id %>(){
             var expireDate=new Date(<%= auction.expireTime.getTime() %>-Date.now());
-            document.getElementById("<%= auction.id %>").innerHTML = Math.floor(expireDate.getTime()/(1000*60*60))+":"+expireDate.getMinutes()+":"+expireDate.getSeconds();
-            if(expireDate.getTime()<=1000)
+            document.getElementById("<%= auction.id %>").innerHTML = Math.floor(expireDate.getTime()/(1000*60*60))+":"+(expireDate.getMinutes() < 10? '0' : '')+expireDate.getMinutes()+":"+expireDate.getSeconds();
+            if(expireDate.getTime()<=1000){
                 window.clearInterval(timer<%= auction.id %>);
+                location.reload();
+            }
         }
         countdown<%= auction.id %>();
         var timer<%= auction.id %>= setInterval(countdown<%= auction.id %>, 1000);

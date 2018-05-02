@@ -163,7 +163,7 @@ var getUser = function (req, res, next) {
 
 var getAuctionList = function (req, res, next) {
     //Visszaadja az árverések listáját(aka főoldal tartalmát)
-    Auction.find({}).populate('item owner').exec(function(err,auctions){
+    Auction.find().where('expireTime').gt(Date.now()).populate('item owner').exec(function(err,auctions){
         console.log("---getAuctionList---");
         console.log(auctions);
         res.data["auctions"]=auctions;
@@ -172,6 +172,18 @@ var getAuctionList = function (req, res, next) {
     });
     
 }
+
+var getUserAuctions = function(req, res, next){
+    Auction.find().where('owner').equals(res.data.user._id).populate('item owner').exec(function(err,auctions){
+        console.log("---getActiveAuctions---");
+        console.log(auctions);
+        res.data["auctions"]=auctions;
+        
+        next();
+    });
+}
+
+
 
 var getAuction = function (req, res, next) {
     //Visszaadja az árverések listáját(aka főoldal tartalmát)
@@ -237,6 +249,8 @@ app.get('/',
         res.redirect('/auctions');
     });
 
+//----Auctions
+
 app.get('/auctions',
     getUser,
     getAuctionList,
@@ -251,6 +265,11 @@ app.get('/auctions/:id/bid',
         });
 
 
+//----User
 
+app.get('/user',
+    getUser,
+    getUserAuctions,
+    renderMW("profil"));
 
 app.listen(80);
