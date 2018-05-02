@@ -51,7 +51,7 @@ var User = mongoose.model('User', UserSchema);
 
 
 var AuctionSchema = new Schema({
-    expireTime: Number,
+    expireTime: Date,
     price: Number,
     owner: {type: Schema.ObjectId, ref:'User'},
     item: {type: Schema.ObjectId, ref:'Item'}
@@ -90,7 +90,7 @@ User.findOne({username:"Suti"},function(err, user){
                     });
                     item2.save(function (err) {
                         var auction1 = new Auction({
-                            expireTime: 90,
+                            expireTime: new Date,
                             price: 300,
                             owner: user1._id,
                             item: item1._id
@@ -98,7 +98,7 @@ User.findOne({username:"Suti"},function(err, user){
                         
                         auction1.save(function (err) {
                             var auction2 = new Auction({
-                                expireTime: 960,
+                                expireTime: new Date,
                                 price: 540,
                                 owner: user2._id,
                                 item: item2._id
