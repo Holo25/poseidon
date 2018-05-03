@@ -10,25 +10,24 @@
 
 	<body>
         <div class="container">
-            <form class="form-login mx-auto mt-4">
+            <form class="form-login mx-auto mt-4" action="/login" method="POST">
                 <h1>Poseidon</h1>
                 <h3>Vedd meg a karriered!</h3>
 
                 <div class="form-group">
                     <label for="neptunCode">Neptun kód</label>
-                    <input type="text" class="form-control" id="neptunCode" placeholder="ABCDEF">
+                    <input type="text" class="form-control" name="username" placeholder="ABCDEF">
                 </div>
                 <div class="form-group">
                     <label for="password">Jelszó</label>
-                    <input type="password" class="form-control" id="password" placeholder="hunter2">
+                    <input type="password" class="form-control" name="password" placeholder="hunter2">
                 </div>
-                <a class="btn btn-green" href="main.html" role="button">Bejelentkezés</a>
+                <input type="submit" class="btn btn-green" value="Bejelentkezés">
                     <br />
                     <a href="register.html">Regisztráció</a>
                 <br />
                     <a href="#azthittedezcsinalbarmit">Elfelejtett jelszó</a>
-                <br />
-                    <a href="admin.html">Véletlenül találtad meg az oldalt? Kattints ide!</a>
+                
                     
 </form>
         </div>

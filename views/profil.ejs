@@ -11,29 +11,23 @@
     <link rel="stylesheet" href="main.css" />
 </head>
 <body>
-    <%- include('header', {page: "profil",  user:data.user}) %>
+    <%- include('header', {page: "profil",  user:user}) %>
     
     <main>
         <div class="container">
             <form>
                 <fieldset>
-                    <legend><%= data.user.username%></legend>
-                    <div class="form-group row">
-                        <label for="staticName" class="col-sm-2 col-form-label">Név</label>
-                        <div class="col-sm-10">
-                            <input type="text" readonly class="form-control-plaintext" id="staticName" value="<%= data.user.name %>">
-                        </div>
-                    </div>
+                    <legend><%= user.username%></legend>
                     <div class="form-group row">
                         <label for="staticNeptun" class="col-sm-2 col-form-label">Neptun Kód</label>
                         <div class="col-sm-10">
-                            <input type="text" readonly class="form-control-plaintext" id="staticNeptun" value="<%= data.user.neptun%>">
+                            <input type="text" readonly class="form-control-plaintext" id="staticNeptun" value="<%= user.neptun%>">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="email" class="col-sm-2 col-form-label">Email</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="email" value="<%= data.user.email %>">
+                            <input type="text" class="form-control" id="email" value="<%= user.email %>">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -48,7 +42,7 @@
                             <input type="password" class="form-control" id="inputPasswordRe" placeholder="Jelszó újra">
                         </div>
                     </div>
-                    <button type="button" class="btn btn-green">Mentés</button>
+                    <input ton type="button" class="btn btn-green" value="Mentés"/>
                 </fieldset>
             </form>
             <h1>Aktív Licitálások</h1>

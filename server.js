@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var mongoose = require('mongoose');
+var session = require('express-session');
+
 
 
 /*
@@ -40,7 +42,7 @@ var Item = mongoose.model('Item', ItemSchema );
 
 var UserSchema = new Schema({
     username: String,
-    name: String,
+    password: String,
     credit: Number,
     neptun: String,
     email: String,
@@ -63,7 +65,7 @@ User.findOne({username:"Suti"},function(err, user){
     if(user === null){ // Suti nelkul nincs az eletnek ertelme.
         var user1= new User({
             username:"Suti",
-            name:"Szilvás Bukta",
+            password:"bukta1",
             credit:4201,
             neptun:"C3F4IM",
             email:"mertazt@szeretem.hu"
@@ -72,7 +74,7 @@ User.findOne({username:"Suti"},function(err, user){
         user1.save(function (err) {
             var user2= new User({
                 username:"Pretender",
-                name:"Epres Bukta",
+                password:"bunko2",
                 credit:111,
                 neptun:"BATMAN",
                 email:"haha@ha.ha"
@@ -151,12 +153,14 @@ auction.save(function (err) {
 
 var getUser = function (req, res, next) {
     //Megkeresi a jelenleg loginolt usert
-    User.findOne({},function(err, user){
-        console.log("---getUser---");
-        console.log(user);
-        res.data={user:user};
-        next();
-    });
+    if(req.session && req.session.userID){
+        User.findById(req.session.userID,function(err, user){
+            console.log("---getUser---");
+            console.log(user);
+            req.user=user;
+            return next();
+        });
+    }else res.redirect('/login');
 }
 
 
@@ -166,7 +170,7 @@ var getAuctionList = function (req, res, next) {
     Auction.find().where('expireTime').gt(Date.now()).populate('item owner').exec(function(err,auctions){
         console.log("---getAuctionList---");
         console.log(auctions);
-        res.data["auctions"]=auctions;
+        req.locals={auctions:auctions};
         
         next();
     });
@@ -174,10 +178,10 @@ var getAuctionList = function (req, res, next) {
 }
 
 var getUserAuctions = function(req, res, next){
-    Auction.find().where('owner').equals(res.data.user._id).populate('item owner').exec(function(err,auctions){
+    Auction.find().where('owner').equals(req.user._id).populate('item owner').exec(function(err,auctions){
         console.log("---getActiveAuctions---");
         console.log(auctions);
-        res.data["auctions"]=auctions;
+        req.locals={auctions:auctions};
         
         next();
     });
@@ -190,7 +194,7 @@ var getAuction = function (req, res, next) {
     Auction.findOne({_id:req.params.id}).populate('item owner').exec(function(err,auction){
         console.log("---getAuction---");
         console.log(auction);
-        res.data["auction"]=auction;
+        req.locals={auction:auction};
         next();
     });
     
@@ -199,11 +203,11 @@ var getAuction = function (req, res, next) {
 var makeBid = function(req,res,next){
     if(req.query.val){
         console.log("---makeBid---");
-        var auction=res.data.auction;
+        var auction=req.locals.auction;
         if(req.query.val > auction.price){
             console.log(req.query.val +">"+auction.price);
             var oldOwner=auction.owner;
-            var newOwner=res.data.user;
+            var newOwner=req.user;
             if(oldOwner.id==newOwner.id){
                 newOwner.credit-=req.query.val-auction.price;
                 oldOwner.credit=newOwner.credit;
@@ -229,10 +233,28 @@ var makeBid = function(req,res,next){
     }else return next();
 }
 
+function authUser(req, res, next){
+    User.findOne().where('neptun').equals(req.body.username).where('password').equals(req.body.password).exec(function(err,user){
+        if(user){
+            req.session.userID=user._id;
+            next();
+        }
+        else res.redirect('/login');
+    });
+}
+
+function logoutUser(req, res, next){
+    if(req.session && req.session.userID)
+        req.session.destroy(function(err) {
+            return next();
+        });
+    else next();
+}
+
 var renderMW = function (viewName) {
     
       return function (req, res) {
-        res.render(viewName, {data:res.data});
+        res.render(viewName, {data:req.locals,user:req.user});
         console.log("-----RENDERED------");
       };
     
@@ -240,7 +262,9 @@ var renderMW = function (viewName) {
 
 app.use(express.static('public'))
 app.set('view engine', 'ejs');
-
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(session({ secret: 'macskajaj',resave:false, saveUninitialized:false}));
 
 
 app.get('/',
@@ -271,5 +295,18 @@ app.get('/user',
     getUser,
     getUserAuctions,
     renderMW("profil"));
+
+
+//----Login/Logout/Register
+
+app.get('/login',renderMW("login"));
+
+app.post('/login',authUser,function(req, res){
+    res.redirect('/auctions');
+});
+
+app.get('/logout',logoutUser,function(req, res){
+    res.redirect('/login');
+});
 
 app.listen(80);
