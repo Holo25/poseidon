@@ -10,31 +10,37 @@
 
 	<body>
         <div class="container">
-            <form class="form-login mx-auto mt-4">
+            <form action='/register' method="POST" class="form-login mx-auto mt-4">
                 <h1>Poseidon</h1>
                 <h3>Vedd meg a jövőd!</h3>
+                <% if(error){%>
+                    <div class="alert alert-danger alert-dismissible">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>Sikertelen bejelentkezés:</strong> <%- error %> 
+                      </div>
+                <% } %> 
                 <div class="form-group">
-                    <label for="name">Név</label>
-                    <input type="text" class="form-control" id="name">
+                    <label for="name">Felhasználónév</label>
+                    <input type="text" class="form-control" name="username">
                 </div>
                 <div class="form-group">
                     <label for="neptunCode">Neptun kód</label>
-                    <input type="text" class="form-control" id="neptunCode">
+                    <input type="text" class="form-control" name="neptun">
                 </div>
                 <div class="form-group">
                     <label for="mail">Email</label>
-                    <input type="email" class="form-control" id="mail">
+                    <input type="email" class="form-control" name="mail">
                 </div>
                 <div class="form-group">
                     <label for="password">Jelszó</label>
-                    <input type="password" class="form-control" id="password">
+                    <input type="password" class="form-control" name="password">
                 </div>
                 <div class="form-group">
                     <label for="passwordRe">Jelszó újra</label>
-                    <input type="password" class="form-control" id="passwordRe">
+                    <input type="password" class="form-control" name="passwordRe">
                 </div>
-                <a class="btn btn-green" href="main.html" role="button">Regisztráció</a><br>
-                <a href="login.html">Bejelentkezés</a>
+                <input type="submit" class="btn btn-green" value="Regisztrálás"/><br>
+                <a href="login">Bejelentkezés</a>
             </form>
             
         </div>

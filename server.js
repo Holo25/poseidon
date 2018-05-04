@@ -3,7 +3,7 @@ var app = express();
 var path = require('path');
 var mongoose = require('mongoose');
 var session = require('express-session');
-
+var validator = require('validator');
 
 
 /*
@@ -156,7 +156,6 @@ var getUser = function (req, res, next) {
     if(req.session && req.session.userID){
         User.findById(req.session.userID,function(err, user){
             console.log("---getUser---");
-            console.log(user);
             req.user=user;
             return next();
         });
@@ -169,7 +168,6 @@ var getAuctionList = function (req, res, next) {
     //Visszaadja az árverések listáját(aka főoldal tartalmát)
     Auction.find().where('expireTime').gt(Date.now()).populate('item owner').exec(function(err,auctions){
         console.log("---getAuctionList---");
-        console.log(auctions);
         req.locals={auctions:auctions};
         
         next();
@@ -180,7 +178,6 @@ var getAuctionList = function (req, res, next) {
 var getUserAuctions = function(req, res, next){
     Auction.find().where('owner').equals(req.user._id).populate('item owner').exec(function(err,auctions){
         console.log("---getActiveAuctions---");
-        console.log(auctions);
         req.locals={auctions:auctions};
         
         next();
@@ -193,7 +190,6 @@ var getAuction = function (req, res, next) {
     //Visszaadja az árverések listáját(aka főoldal tartalmát)
     Auction.findOne({_id:req.params.id}).populate('item owner').exec(function(err,auction){
         console.log("---getAuction---");
-        console.log(auction);
         req.locals={auction:auction};
         next();
     });
@@ -205,7 +201,6 @@ var makeBid = function(req,res,next){
         console.log("---makeBid---");
         var auction=req.locals.auction;
         if(req.query.val > auction.price){
-            console.log(req.query.val +">"+auction.price);
             var oldOwner=auction.owner;
             var newOwner=req.user;
             if(oldOwner.id==newOwner.id){
@@ -234,16 +229,18 @@ var makeBid = function(req,res,next){
 }
 
 function authUser(req, res, next){
+    console.log("---authUser---");
     User.findOne().where('neptun').equals(req.body.username).where('password').equals(req.body.password).exec(function(err,user){
         if(user){
             req.session.userID=user._id;
-            next();
+            return next();
         }
-        else res.redirect('/login');
+        else res.render("login",{error:"Rossz felhasználónév vagy jelszó!"});
     });
 }
 
 function logoutUser(req, res, next){
+    console.log("---logoutUser---");
     if(req.session && req.session.userID)
         req.session.destroy(function(err) {
             return next();
@@ -251,10 +248,41 @@ function logoutUser(req, res, next){
     else next();
 }
 
+function validateUser(req, res, next){
+    if(validator.isAlphanumeric(req.body.username) && validator.isAlphanumeric(req.body.neptun)&& validator.isLength(req.body.neptun,{min:6, max: 6}) && validator.isEmail(req.body.mail)){
+        if(validator.isAlphanumeric(req.body.password)&& validator.isLength(req.body.password,{min:6, max: undefined}) && validator.equals(req.body.password,req.body.passwordRe)){
+            req.locals={username:validator.escape(req.body.username),
+            neptun:validator.escape(req.body.neptun),
+            mail:validator.normalizeEmail(req.body.mail),
+            password:validator.escape(req.body.password)};
+            return next();
+        }
+    }
+    res.render("register",{error:"Hibás adatok!"});
+}
+
+function registerUser(req, res, next){
+    User.findOne().where('neptun').equals(req.locals.neptun).exec(function(err,user){
+        if(user) res.render("register",{error:"Felhasználó már létezik!"});
+        else{
+            new User({
+                username:req.locals.username,
+                neptun:req.locals.neptun,
+                email:req.locals.mail,
+                credit:1000,
+                password:req.locals.password
+            }).save(function(err){
+                if(err) console.log(err);
+                next();
+            });
+        }
+    });
+}
+
 var renderMW = function (viewName) {
     
       return function (req, res) {
-        res.render(viewName, {data:req.locals,user:req.user});
+        res.render(viewName, {data:req.locals, user:req.user, error:undefined});
         console.log("-----RENDERED------");
       };
     
@@ -306,6 +334,12 @@ app.post('/login',authUser,function(req, res){
 });
 
 app.get('/logout',logoutUser,function(req, res){
+    res.redirect('/login');
+});
+
+app.get('/register',renderMW("register"));
+
+app.post('/register',validateUser,registerUser,function(req, res){
     res.redirect('/login');
 });
 
