@@ -151,18 +151,6 @@ auction.save(function (err) {
     });
 */
 
-var getUser = function (req, res, next) {
-    //Megkeresi a jelenleg loginolt usert
-    if(req.session && req.session.userID){
-        User.findById(req.session.userID,function(err, user){
-            console.log("---getUser---");
-            req.user=user;
-            return next();
-        });
-    }else res.redirect('/login');
-}
-
-
 
 var getAuctionList = function (req, res, next) {
     //Visszaadja az árverések listáját(aka főoldal tartalmát)
@@ -226,6 +214,17 @@ var makeBid = function(req,res,next){
                 
         }
     }else return next();
+}
+
+function getUser(req, res, next) {
+    //Megkeresi a jelenleg loginolt usert
+    if(req.session && req.session.userID){
+        User.findById(req.session.userID,function(err, user){
+            console.log("---getUser---");
+            req.user=user;
+            return next();
+        });
+    }else res.redirect('/login');
 }
 
 function authUser(req, res, next){
@@ -292,7 +291,7 @@ app.use(express.static('public'))
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use(session({ secret: 'macskajaj',resave:false, saveUninitialized:false}));
+app.use(session({ secret: 'macskajaj', cookie: {maxAge: 60000},resave:true, saveUninitialized:false}));
 
 
 app.get('/',
@@ -323,6 +322,10 @@ app.get('/user',
     getUser,
     getUserAuctions,
     renderMW("profil"));
+
+app.post('/user/edit',
+    getUser,
+    updateUser);
 
 
 //----Login/Logout/Register
