@@ -10,7 +10,11 @@
             <li class="nav-item <% if(page==="profil"){ %> active <% } %>">
                 <a class="nav-link" href="user">Profil</a>
             </li>
-            
+            <% if(user.neptun==="admin1"){ %>
+            <li class="nav-item <% if(page==="auctions"){ %> active <% } %>">
+                <a class="nav-link" href="admin">Admin</a>
+            </li>
+            <% } %>
         </ul>
     </div>
         <div class="mx-auto">

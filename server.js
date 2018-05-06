@@ -44,7 +44,7 @@ app.use(express.static('public'))
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use(session({ secret: 'macskajaj', cookie: {maxAge: 1200000},resave:true, saveUninitialized:false}));
+app.use(session({ secret: 'macskajaj', cookie: {maxAge: 3600000},resave:true, saveUninitialized:false}));
 
 
 app.get('/',

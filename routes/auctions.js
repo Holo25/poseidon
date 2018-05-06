@@ -1,9 +1,11 @@
 var getAuction=require("../middlewares").getAuction;
 var makeBid=require("../middlewares").makeBid;
 var getUser=require("../middlewares").getUser;
+var getAdmin=require("../middlewares").getAdmin;
 var getAuctionList=require("../middlewares").getAuctionList;
 var renderMW=require("../middlewares").renderMW;
 var createAuction=require("../middlewares").createAuction;
+var stopAuction=require("../middlewares").stopAuction;
 
 module.exports=function(app){
     app.get('/auctions',
@@ -20,9 +22,17 @@ module.exports=function(app){
         });
 
     app.post('/auctions/create',
-        getUser,
+        getAdmin,
         createAuction,
         function(req, res){
+            res.redirect('/admin');
+        });
+    
+    app.get('/auctions/:id/stop',
+        getAdmin,
+        getAuction,
+        stopAuction,
+        function(req,res){
             res.redirect('/admin');
         });
 };

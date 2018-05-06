@@ -19,6 +19,16 @@ module.exports.createAuction = function (req, res, next) {
     
 };
 
+module.exports.stopAuction = function (req, res, next) {
+    console.log("---Stopped---");
+    req.locals.auction.expireTime=new Date();
+    req.locals.auction.save(function(err){
+        if(err) console.log(err);
+        return next();
+    })
+    
+};
+
 module.exports.getAuctionList = function (req, res, next) {
     //Visszaadja az árverések listáját(aka főoldal tartalmát)
     Auction.find().where('expireTime').gt(Date.now()).populate('item owner').exec(function(err,auctions){
@@ -172,7 +182,7 @@ module.exports.registerUser=function(req, res, next){
 };
 
 module.exports.updateUser=function(req, res, next){
-    if(validator.isEmail(req.body.email) && validator.equals(req.body.password,req.body.passwordRe)){
+    if(validator.isEmail(req.body.email) && validator.equals(req.body.password,req.body.passwordRe) && validator.isLength(req.body.password,{min:6, max: undefined})){
         req.user.email=validator.normalizeEmail(req.body.email);
         req.user.password=validator.escape(req.body.password);
         req.user.save(function(err){

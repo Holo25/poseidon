@@ -1,0 +1,30 @@
+<div class="card col-lg-6 my-1">
+    <div class="card-body">
+        <h5 class="card-title"><%= auction.item.name %></h5>
+        <p class="card-text">
+            Kredit: <%= auction.item.credit %>
+            <span class="float-right">Lejár: <span id="<%= auction.id %>"></span></span>
+        </p>
+        <p class="card-text">
+            Utolsó licitáló: <%= auction.owner.username %>
+            <span class="float-right">Jelenlegi ár: <%= auction.price %>cr</span>
+        </p>
+        <form action="/auctions/<%= auction.id %>/stop" method="GET">
+            <div class="input-group mt-5">
+                <input type="submit" class="btn btn-red" value="Leállítás"/>
+            </div>
+        </form>
+    </div>
+    <script>
+        function countdown<%= auction.id %>(){
+            var expireDate=new Date(<%= auction.expireTime.getTime() %>-Date.now());
+            document.getElementById("<%= auction.id %>").innerHTML = Math.floor(expireDate.getTime()/(1000*60*60))+":"+(expireDate.getMinutes() < 10? '0' : '')+expireDate.getMinutes()+":"+expireDate.getSeconds();
+            if(expireDate.getTime()<=1000){
+                window.clearInterval(timer<%= auction.id %>);
+                location.reload();
+            }
+        }
+        countdown<%= auction.id %>();
+        var timer<%= auction.id %>= setInterval(countdown<%= auction.id %>, 1000);
+    </script>
+</div>
