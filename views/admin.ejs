@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="main.css" />
 </head>
 <body>
-    <%- include('header', {page: "auctions", user:data.user}) %>
+    <%- include('header', {page: "auctions", user:user}) %>
     <main>
         <div class="container">
             <form>
@@ -35,10 +35,38 @@
                             <input type="text" class="form-control" id="highestStartingPrice" value="1000">
                         </div>
                     </div>
-                    <button type="button" class="btn btn-green">Mentés</button>
+                    <input type="submit" class="btn btn-green" value="Mentés"/>
                 </fieldset>
             </form>
-            TODO:Routokhoz árverés indítás és leállítás form
+            <form action="/auctions/create" method="POST">
+                <fieldset>
+                    <legend>Új árverés inditás</legend>
+                    <div class="form-group row">
+                        <label for="item" class="col-sm-2 col-form-label">Tantárgy</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="item" name="item">
+                                <%var i;
+                                for (i = 0; i < data.items.length; i++) {  %>
+                                    <option value="<%= data.items[i]._id %>"><%= data.items[i].name %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="price" class="col-sm-2 col-form-label">Ár</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="price" name="price">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="expireTime" class="col-sm-2 col-form-label">Időtartam másodpercben</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="expireTime" name="expireTime">
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-green" value="Indítás"/>
+                </fieldset>
+            </form>
             <div class="row">
                 <%var i;
                 for (i = 0; i < data.auctions.length; i++) {  %>
