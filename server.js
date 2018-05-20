@@ -24,7 +24,7 @@ var session = require('express-session');
 
 */
 
-var mongoDB = 'mongodb://node-poseidon:UFfeG1UkYkfzjITkT3Fc4Z0rDL0VyxbEwbSeHdkm9xwiQ8BLipUFahS8hp4lh28O9J8koElalMhTtnkWKinpYw%3D%3D@node-poseidon.documents.azure.com:10255/?ssl=true';
+var mongoDB = 'mongodb://localhost/c3f4im';
 mongoose.connect(mongoDB);
 
 var db = mongoose.connection;
