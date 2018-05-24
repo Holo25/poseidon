@@ -31,7 +31,7 @@ module.exports.logoutUser=function(req, res, next){
         req.session.destroy(function(err) {
             return next();
         });
-    else next();
+    else res.redirect('/login');
 };
 
 module.exports.validateUser=function(req, res, next){
