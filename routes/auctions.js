@@ -1,11 +1,11 @@
-var getAuction=require("../middlewares").getAuction;
-var makeBid=require("../middlewares").makeBid;
-var getUser=require("../middlewares").getUser;
-var getAdmin=require("../middlewares").getAdmin;
-var getAuctionList=require("../middlewares").getAuctionList;
-var renderMW=require("../middlewares").renderMW;
-var createAuction=require("../middlewares").createAuction;
-var stopAuction=require("../middlewares").stopAuction;
+var getAuction=require("../middlewares/auctions").getAuction;
+var makeBid=require("../middlewares/generic").makeBid;
+var getUser=require("../middlewares/user").getUser;
+var getAdmin=require("../middlewares/generic").getAdmin;
+var getAuctionList=require("../middlewares/auctions").getAuctionList;
+var renderMW=require("../middlewares/generic").renderMW;
+var createAuction=require("../middlewares/auctions").createAuction;
+var stopAuction=require("../middlewares/auctions").stopAuction;
 
 module.exports=function(app){
     app.get('/auctions',

@@ -1,9 +1,9 @@
 //----Login/Logout/Register
-var authUser=require("../middlewares").authUser;
-var logoutUser=require("../middlewares").logoutUser;
-var validateUser=require("../middlewares").validateUser;
-var registerUser=require("../middlewares").registerUser;
-var renderMW=require("../middlewares").renderMW;
+var authUser=require("../middlewares/user").authUser;
+var logoutUser=require("../middlewares/user").logoutUser;
+var validateUser=require("../middlewares/user").validateUser;
+var registerUser=require("../middlewares/user").registerUser;
+var renderMW=require("../middlewares/generic").renderMW;
 
 module.exports=function(app){
     app.get('/login',renderMW("login"));
