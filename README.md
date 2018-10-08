@@ -5,5 +5,3 @@ Egységes tantárgyvételi rendszer.
 
 Node.js + Express framework + MongoDb database.
 
-
-End.
